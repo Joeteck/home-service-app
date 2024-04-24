@@ -1,10 +1,10 @@
 import { View, Text, TouchableOpacity, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native'
 import GlobalApi from '../../Utils/GlobalApi'
 import Colors from '../../Utils/Colors'
 import BusinessListItem from './BusinessListItem';
+import BackButton from '../../Components/BackButton';
 
 export default function BusinessListByCategory() {
 
@@ -24,13 +24,8 @@ export default function BusinessListByCategory() {
   }
   return (
     <View style={{padding:15,paddingTop:25}}>
-      <TouchableOpacity 
-        style={{display:'flex', flexDirection:'row', gap:10, alignItems:'center'}}
-        onPress={()=>navigation.goBack()}
-        >
-        <Ionicons name="chevron-back" size={24} color="black" />
-        <Text style={{fontSize:23, fontFamily:'outline-medium'}}>{param?.category}</Text>
-      </TouchableOpacity>
+
+      <BackButton text={param?.category}/>
 
       {businessList.length>0 ? (
         <FlatList
@@ -43,7 +38,7 @@ export default function BusinessListByCategory() {
       )
       : 
       (
-        <Text style={{fontSize:20, fontFamily:'outline-medium', marginTop:'12%', textAlign:'center', color:Colors.GREY}}>No Business Found</Text>
+        <Text style={{fontSize:20, fontFamily:'outfit-medium', marginTop:'12%', textAlign:'center', color:Colors.GREY}}>No Business Found</Text>
       )}
     </View>
   )

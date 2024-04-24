@@ -1,18 +1,25 @@
-import { View, Text, StyleSheet, Image } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
+import { useNavigation } from '@react-navigation/native'
 import Colors from '../../Utils/Colors'
 import TwoWordText from '../../Components/TwoWordLimit'
 
 export default function BusinessListItemSmall({business}) {
+
+    const navigation = useNavigation()
+
     return (
-        <View style={styles.container}>
-        <Image source={{uri:business?.images[0]?.url}}
-            style={styles.image}/>
+        <TouchableOpacity 
+            style={styles.container}
+            onPress={()=>navigation.navigate('business-details', {business:business})}
+            >
+            <Image source={{uri:business?.images[0]?.url}}
+                style={styles.image}/>
             <View style={styles.infoContainer}>
                 <Text style={styles.name} numberOfLines={1} ellipsizeMode='tail'>{business?.name}</Text>
-                <Text style={{fontSize:13, fontFamily:'outline', color:Colors.GREY}}>{business?.contactPerson}</Text>
+                <Text style={{fontSize:13, fontFamily:'outfit', color:Colors.GREY}}>{business?.contactPerson}</Text>
                 <Text style={{fontSize:10, 
-                    fontFamily:'outline', 
+                    fontFamily:'outfit', 
                     padding:3, color:Colors.PRIMARY,
                     backgroundColor:Colors.PRIMARY_LIGHT, 
                     borderRadius:3, alignSelf:'flex-start', 
@@ -21,7 +28,7 @@ export default function BusinessListItemSmall({business}) {
                     {business?.category?.name}
                 </Text>
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 
@@ -38,7 +45,7 @@ const styles = StyleSheet.create({
     },
     name: {
         fontSize: 15,
-        fontFamily: 'outline-medium',
+        fontFamily: 'outfit-medium',
         overflow: 'hidden',
         maxWidth:150
     },

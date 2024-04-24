@@ -22,6 +22,6 @@ const styles = StyleSheet.create({
     },
     heading:{
         fontSize:20,
-        fontFamily:'outline-medium',
+        fontFamily:'outfit-medium',
     },
 })

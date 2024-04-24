@@ -80,10 +80,37 @@ const getSlider=async()=>{
         const result = await request(MASTER_URL, query);
         return result;
     }
+
+    const createBooking=async(data)=>{
+
+        const mutuationQuery = gql
+        `
+            mutation createBooking {
+                createBooking(
+                data: {
+                    bookingStatus: Booked, 
+                    business_List: {connect: {id: "`+data.businessId+`"}}, 
+                    date: "`+data.date+`", 
+                    time: "`+data.time+`", 
+                    userName: "`+data.userName+`", 
+                    userEmail: "`+data.userEmail+`"}
+                ) {
+                id
+                }
+                publishManyBookings(to: PUBLISHED) {
+                    count
+                }
+            }
+        `
+
+        const result = await request(MASTER_URL, mutuationQuery);
+        return result
+    }
     
     export default {
         getSlider,
         getCategory,
         getBusinessLists,
         getBusinessListByCategory,
+        createBooking,
     }

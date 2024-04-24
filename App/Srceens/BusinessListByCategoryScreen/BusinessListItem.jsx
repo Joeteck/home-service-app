@@ -20,11 +20,11 @@ export default function BusinessListItem({business}) {
             />
 
             <View style={styles.subContainer}>
-                <Text style={{fontSize:13, fontFamily:'outline', color:Colors.GREY}}>{business?.contactPerson}</Text>
-                <Text style={{fontFamily:'outline-bold', maxWidth:200}} numberOfLines={1} ellipsizeMode='tail'>
+                <Text style={{fontSize:13, fontFamily:'outfit', color:Colors.GREY}}>{business?.contactPerson}</Text>
+                <Text style={{fontFamily:'outfit-bold', maxWidth:200}} numberOfLines={1} ellipsizeMode='tail'>
                 {business?.name}
                 </Text>
-                <Text style={{fontSize:14, fontFamily:'outline', color:Colors.GREY, maxWidth:200}} numberOfLines={2} ellipsizeMode='tail'>
+                <Text style={{fontSize:14, fontFamily:'outfit', color:Colors.GREY, maxWidth:200}} numberOfLines={2} ellipsizeMode='tail'>
                     <Ionicons name="location-sharp" size={18} color={Colors.PRIMARY} style={{marginRight:5}} />
                     {business?.address}
                 </Text>

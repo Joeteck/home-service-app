@@ -33,7 +33,7 @@ export default function Categories() {
                             <View style={styles.categoryIcon}>
                                 <Image source={{uri:item?.icon?.url}} style={{width:30, height:30}}/>
                             </View>
-                                <Text style={{fontFamily:'outline-medium', marginTop:5}}>{item?.name}</Text>
+                                <Text style={{fontFamily:'outfit-medium', marginTop:5}}>{item?.name}</Text>
                         </TouchableOpacity>
                     )}
                 />

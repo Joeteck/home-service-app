@@ -14,8 +14,8 @@ export default function Header() {
                 <View style={styles.profileContainer}>
                     <Image source={{uri:user?.imageUrl}} style={styles.userImage} />
                     <View>
-                        <Text style={{ fontSize:12, color:Colors.WHITE, fontFamily:'outline',}}>Welcome,</Text>
-                        <Text style={{fontSize:20,color:Colors.WHITE, fontFamily:'outline',}}>{user?.firstName}</Text>
+                        <Text style={{ fontSize:12, color:Colors.WHITE, fontFamily:'outfit',}}>Welcome,</Text>
+                        <Text style={{fontSize:20,color:Colors.WHITE, fontFamily:'outfit',}}>{user?.firstName}</Text>
                     </View>
                 </View>
                 <Ionicons name="bookmark-outline" size={27} color={Colors.WHITE}/>
@@ -41,7 +41,7 @@ const styles =StyleSheet.create({
         width:'100%',
         padding:20,
         paddingTop:40,
-        fontFamily:'outline',
+        fontFamily:'outfit',
         justifyContent:'space-between',
         backgroundColor:Colors.PRIMARY,
         borderBottomEndRadius:25,

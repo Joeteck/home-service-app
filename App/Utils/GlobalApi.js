@@ -106,6 +106,61 @@ const getSlider=async()=>{
         const result = await request(MASTER_URL, mutuationQuery);
         return result
     }
+
+    const GetUserBookings = async (userEmail) => {
+
+        const query = gql
+        `
+        query GetUserBookings {
+            bookings(where: {userEmail: "`+userEmail+`"}) {
+                date
+                id
+                time
+                userEmail
+                userName
+                bookingStatus
+                business_List {
+                    id
+                    email
+                    name
+                    address
+                    contactPerson
+                    about
+                    images {
+                    url
+                    }
+                }
+            }
+        }
+            
+        `
+        const result = await request(MASTER_URL, query);
+        return result
+    }
+
+    const EditBooking=async(data)=>{
+
+        const mutuationQuery = gql
+        `
+            mutation EditBooking {
+                updateBooking(
+                data: {
+                    bookingStatus: `+data.bookingStatus+`, 
+                    date: "`+data.date+`", 
+                    time: "`+data.time+`"}
+                where: {id: "`+data.id+`"}
+                ) {
+                id
+                }
+                publishManyBookings(to: PUBLISHED) {
+                count
+                }
+            }
+            
+        `
+        const result=await request(MASTER_URL, mutuationQuery)
+        return result;
+    }
     
     export default {
         getSlider,
@@ -113,4 +168,6 @@ const getSlider=async()=>{
         getBusinessLists,
         getBusinessListByCategory,
         createBooking,
+        GetUserBookings,
+        EditBooking
     }

@@ -5,18 +5,20 @@ import Heading from '../../Components/Heading'
 import Colors from '../../Utils/Colors'
 import { useNavigation } from '@react-navigation/native'
 
-export default function Categories() {
+export default function Categories({isLoading}) {
 
     const navigation = useNavigation();
     const [category, setCategory] = useState([])
+    const [loading, setLoading] = useState(false)
 
     useEffect(()=>{
         getCategory()
     }, [])
     // Get Categories API
     const getCategory=()=>{
+        setLoading(true)
         GlobalApi.getCategory().then(
-            (resp)=>{setCategory(resp?.categories)}
+            (resp)=>{setCategory(resp?.categories), setLoading(false)}
         )
     }
     return (
@@ -24,6 +26,8 @@ export default function Categories() {
             <Heading text={'Categories'} isViewAll={true}/>
             <View>
                 <FlatList
+                    onRefresh={()=>getCategory()}
+                    refreshing={loading}
                     data={category}
                     numColumns={4}
                     renderItem={({item, index})=>index<=3 &&(

@@ -1,6 +1,7 @@
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, TextInput, ScrollView, KeyboardAvoidingView, ToastAndroid } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, TextInput, ScrollView, KeyboardAvoidingView, ToastAndroid, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import CalendarPicker from "react-native-calendar-picker";
+import DropDownPicker from 'react-native-dropdown-picker';
 import { format } from 'date-fns';
 import { Ionicons } from '@expo/vector-icons';
 import Heading from '../../Components/Heading';
@@ -8,16 +9,23 @@ import Colors from '../../Utils/Colors';
 import GlobalApi from '../../Utils/GlobalApi';
 import { useUser } from '@clerk/clerk-react';
 
-export default function BookingModal({businessId, hideModal}) {
+export default function BookingModal({booking, hideModal}) {
 
     const [timeList, setTimeList] = useState();
     const [selectedTime, setSelectedTime] = useState();
     const [selectedDate, setSelectedDate] = useState();
-    const [note, setNote] = useState();
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState(null);
+    const [items, setItems] = useState([
+        {label: 'Booked', value: 'Booked'}, {label: 'InProgress', value: 'InProgress'},
+        {label: 'Completed', value: 'Completed'}
+    ]);    
     const {user} = useUser();
+    const business =  booking?.business_List;
 
     useEffect(()=>{
         getTime();
+        console.log(booking.id,value)
     }, [])
     const getTime =()=>{
         const timeList = [];
@@ -40,23 +48,23 @@ export default function BookingModal({businessId, hideModal}) {
     }
 
 
-    const creeateBooking=()=>{
+    const editBooking=()=>{
 
-        if(!selectedDate || !selectedTime)
+        console.log("booking: ", booking.id,value)
+        if(!selectedDate || !selectedTime ||!value)
         {
-            ToastAndroid.show("Please select date and time", ToastAndroid.LONG)
+            ToastAndroid.show("Please select date and time and status", ToastAndroid.LONG)
             return;
         }
         const data = {
-            businessId: businessId,
             date: format(selectedDate, ' E dd-MMM-yyyy'), // Replace 'yyyy-MM-dd' with your desired date format,
             time: selectedTime,
-            userName: user?.fullName,
-            userEmail: user?.primaryEmailAddress.emailAddress
+            bookingStatus: value,
+            id: booking.id
         }
-        GlobalApi.createBooking(data).then((resp)=>{
+        GlobalApi.EditBooking(data).then((resp)=>{
             console.log("Response: ",resp),
-            ToastAndroid.show("Booking Successful", ToastAndroid.LONG)
+            ToastAndroid.show("Booking Successfully Edited", ToastAndroid.LONG)
             hideModal();
         })
     }
@@ -64,25 +72,51 @@ export default function BookingModal({businessId, hideModal}) {
     
     return (
 
-        <ScrollView>
-            <KeyboardAvoidingView style={{padding:15}} enabled >
+        <View>
 
-                <TouchableOpacity 
-                    style={{display:'flex', flexDirection:'row', gap:10, alignItems:'center', marginBottom:15}}
-                    onPress={()=>hideModal()}
-                >
-                    <Ionicons name="chevron-down" size={24} color="black" />
-                    <Text style={{fontSize:23, fontFamily:'outfit-medium'}}>Booking</Text>
-                </TouchableOpacity>
+        <TouchableOpacity 
+            style={{display:'flex', flexDirection:'row', gap:10, alignItems:'center', position:'absolute', zIndex:10,paddingLeft:10, backgroundColor:Colors.LIGHTGREY, width:'100%' }}
+            onPress={()=>hideModal()}
+        >
+            <Ionicons name="chevron-back" size={20} color="black" />
+            <Text style={{fontSize:20, fontFamily:'outfit-medium', color:Colors.BLACK}}>Edit Booking</Text>
+        </TouchableOpacity>
 
-                <Heading text={'Select Date'} />
+
+        {/* Business Details */}
+
+
+        <ScrollView
+            showsVerticalScrollIndicator={false}
+        >
+        
+        <Image
+            source={{uri:business?.images[0]?.url}}
+            style={{width: '100%', height: 180}}
+        />
+            <View style={{padding:15}}>
+                <View style={styles.infoContainer}>
+                    <Text style={{fontSize: 20, fontFamily: 'outfit-bold'}}>{business?.name}</Text>
+                    <View style={styles.subContainer}>
+                        <Text style={{fontFamily: 'outfit', color: Colors.PRIMARY, fontSize: 16}}>{business?.email}</Text>
+                    </View>
+                    <Text style={{fontSize: 15, fontFamily: 'outfit', color: Colors.GREY}} numberOfLines={1} ellipsizeMode='tail'>
+                        <Ionicons name="location-sharp" size={18} color={Colors.PRIMARY} style={{marginRight: 5}} />
+                        {business?.address}
+                    </Text>
+
+                    {/* Horizontal Line */}
+                    <View style={{width: '100%', height: 0.5, backgroundColor: Colors.GREY, marginVertical: 10}}/>
+                </View>
 
                 {/* Calandar Section */}
+
+                <Heading text={'Select Date'} />
 
                 <View style={styles.headingContainer}>
                     <CalendarPicker 
                         onDateChange={setSelectedDate}
-                        width={320}
+                        width={300}
                         minDate={Date.now()}
                         todayBackgroundColor={Colors.BLACK}
                         todayTextStyle={{color:Colors.WHITE}}
@@ -111,32 +145,39 @@ export default function BookingModal({businessId, hideModal}) {
                     />
                 </View>
 
-                {/* Note Section */}
+                {/* Booking Status */}
 
-                <View style={{marginTop:15}}>
-                    <Heading text={'Any Thing to Note'}/>
-                    <TextInput
-                        onChange={(()=>setNote())}
-                        style={styles.note} 
-                        placeholder='Type here'
-                        placeholderTextColor={Colors.GREY}
-                        multiline={true}
-                        numberOfLines={5}
+                <View>
+                    <Heading text={'Booking Status'} />
+                    <DropDownPicker
+                        open={open}
+                        value={value}
+                        items={items}
+                        setOpen={setOpen}
+                        setValue={setValue}
+                        setItems={setItems}
+                        containerStyle={{
+                            backgroundColor: 'white',
+                            width: 150,
+                            height:200
+                        }}
                     />
                 </View>
-
+                
                 {/* Confirmation Button */}
 
                 <View>
                 <TouchableOpacity 
                         style={{marginTop:15}}
-                        onPress={()=>creeateBooking()}
+                        onPress={()=>editBooking()}
                         >
-                        <Text style={styles.confirmBtn}>Book Now</Text>
+                        <Text style={styles.confirmBtn}>Confirm Changes</Text>
                     </TouchableOpacity>
                 </View>
-            </KeyboardAvoidingView>
+            </View>
         </ScrollView>
+            
+        </View>
     )
 }
 
@@ -145,6 +186,16 @@ const styles = StyleSheet.create({
         padding:15,
         backgroundColor:Colors.PRIMARY_LIGHT,
         borderRadius:15
+    },
+    infoContainer: {
+        padding: 20,
+        display: 'flex',
+        gap: 6
+    },
+    subContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        gap: 5
     },
     selectedTime:{
         padding:6,

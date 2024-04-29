@@ -3,11 +3,10 @@ import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
-import HomeScreen from '../Srceens/Home/HomeScreen';
-import ProfileScreen from '../Srceens/ProfilesScreen/ProfileScreen';
 import BookingScreen from '../Srceens/Booking/BookingScreen';
 import Colors from '../Utils/Colors'
 import HomeNavigation from './HomeNavigation';
+import ProfileNavigation from './ProfileNavigation';
 
 
 const Tab = createBottomTabNavigator();
@@ -46,7 +45,7 @@ export default function TabNavigation() {
             <FontAwesome name="user-circle" size={size} color={color} />
           )
         }}
-        name="profile" component={ProfileScreen} />
+        name="profilescreen" component={ProfileNavigation} />
     </Tab.Navigator>
   )
 }

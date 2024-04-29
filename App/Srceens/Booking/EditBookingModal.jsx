@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, TextInput, ScrollView, KeyboardAvoidingView, ToastAndroid, Image } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, ToastAndroid, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import CalendarPicker from "react-native-calendar-picker";
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -25,7 +25,6 @@ export default function BookingModal({booking, hideModal}) {
 
     useEffect(()=>{
         getTime();
-        console.log(booking.id,value)
     }, [])
     const getTime =()=>{
         const timeList = [];
@@ -50,7 +49,6 @@ export default function BookingModal({booking, hideModal}) {
 
     const editBooking=()=>{
 
-        console.log("booking: ", booking.id,value)
         if(!selectedDate || !selectedTime ||!value)
         {
             ToastAndroid.show("Please select date and time and status", ToastAndroid.LONG)
@@ -63,7 +61,6 @@ export default function BookingModal({booking, hideModal}) {
             id: booking.id
         }
         GlobalApi.EditBooking(data).then((resp)=>{
-            console.log("Response: ",resp),
             ToastAndroid.show("Booking Successfully Edited", ToastAndroid.LONG)
             hideModal();
         })
@@ -86,96 +83,98 @@ export default function BookingModal({booking, hideModal}) {
         {/* Business Details */}
 
 
-        <ScrollView
-            showsVerticalScrollIndicator={false}
-        >
-        
-        <Image
-            source={{uri:business?.images[0]?.url}}
-            style={{width: '100%', height: 180}}
-        />
-            <View style={{padding:15}}>
-                <View style={styles.infoContainer}>
-                    <Text style={{fontSize: 20, fontFamily: 'outfit-bold'}}>{business?.name}</Text>
-                    <View style={styles.subContainer}>
-                        <Text style={{fontFamily: 'outfit', color: Colors.PRIMARY, fontSize: 16}}>{business?.email}</Text>
+            <FlatList
+                data={[business]} // Assuming you want to render only one item, the business
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                    <View>
+                        <Image
+                            source={{ uri: item?.images[0]?.url }}
+                            style={{ width: '100%', height: 180 }}
+                        />
+                        <View style={{ padding: 15 }}>
+                            <View style={styles.infoContainer}>
+                                <Text style={{ fontSize: 20, fontFamily: 'outfit-bold' }}>{item?.name}</Text>
+                                <View style={styles.subContainer}>
+                                    <Text style={{ fontFamily: 'outfit', color: Colors.PRIMARY, fontSize: 16 }}>{item?.email}</Text>
+                                </View>
+                                <Text style={{ fontSize: 15, fontFamily: 'outfit', color: Colors.GREY }} numberOfLines={1} ellipsizeMode='tail'>
+                                    <Ionicons name="location-sharp" size={18} color={Colors.PRIMARY} style={{ marginRight: 5 }} />
+                                    {item?.address}
+                                </Text>
+
+                                {/* Horizontal Line */}
+                                <View style={{ width: '100%', height: 0.5, backgroundColor: Colors.GREY, marginVertical: 10 }} />
+                            </View>
+
+                            {/* Calandar Section */}
+
+                            <Heading text={'Select Date'} />
+
+                            <View style={styles.headingContainer}>
+                                <CalendarPicker
+                                    onDateChange={setSelectedDate}
+                                    width={300}
+                                    minDate={Date.now()}
+                                    todayBackgroundColor={Colors.BLACK}
+                                    todayTextStyle={{ color: Colors.WHITE }}
+                                    selectedDayTextColor={Colors.WHITE}
+                                    selectedDayColor={Colors.PRIMARY}
+                                />
+                            </View>
+
+                            {/* Time Section */}
+
+                            <View style={{ marginTop: 15 }}>
+                                <Heading text={'Select Time Slot'} />
+                                <FlatList
+                                    data={timeList}
+                                    horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+                                    renderItem={({ item }) => (
+                                        <TouchableOpacity
+                                            style={{ marginRight: 10 }}
+                                            onPress={() => setSelectedTime(item.time)}
+                                        >
+                                            <Text style={[selectedTime == item.time ? styles.selectedTime : styles.unSelectedTime]}>{item.time}</Text>
+                                        </TouchableOpacity>
+                                    )}
+                                />
+                            </View>
+
+                            {/* Booking Status */}
+
+                            <View>
+                                <Heading text={'Booking Status'} />
+                                <DropDownPicker
+                                    open={open}
+                                    value={value}
+                                    items={items}
+                                    setOpen={setOpen}
+                                    setValue={setValue}
+                                    setItems={setItems}
+                                    containerStyle={{
+                                        backgroundColor: 'white',
+                                        width: 150,
+                                        height: 200
+                                    }}
+                                />
+                            </View>
+
+                            {/* Confirmation Button */}
+
+                            <View>
+                                <TouchableOpacity
+                                    style={{ marginTop: 15 }}
+                                    onPress={() => editBooking()}
+                                >
+                                    <Text style={styles.confirmBtn}>Confirm Changes</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                     </View>
-                    <Text style={{fontSize: 15, fontFamily: 'outfit', color: Colors.GREY}} numberOfLines={1} ellipsizeMode='tail'>
-                        <Ionicons name="location-sharp" size={18} color={Colors.PRIMARY} style={{marginRight: 5}} />
-                        {business?.address}
-                    </Text>
-
-                    {/* Horizontal Line */}
-                    <View style={{width: '100%', height: 0.5, backgroundColor: Colors.GREY, marginVertical: 10}}/>
-                </View>
-
-                {/* Calandar Section */}
-
-                <Heading text={'Select Date'} />
-
-                <View style={styles.headingContainer}>
-                    <CalendarPicker 
-                        onDateChange={setSelectedDate}
-                        width={300}
-                        minDate={Date.now()}
-                        todayBackgroundColor={Colors.BLACK}
-                        todayTextStyle={{color:Colors.WHITE}}
-                        selectedDayTextColor={Colors.WHITE}
-                        selectedDayColor={Colors.PRIMARY}
-
-                    />
-                </View>
-
-                {/* Time Section */}
-
-                <View style={{marginTop:15}}>
-                    <Heading text={'Select Time Slot'} />
-                    <FlatList
-                        data={timeList}
-                        horizontal={true}
-                        showsHorizontalScrollIndicator={false}
-                        renderItem={({item})=>(
-                            <TouchableOpacity 
-                                style={{marginRight:10}}
-                                onPress={()=>setSelectedTime(item.time)}
-                            >
-                                <Text style={[selectedTime==item.time?styles.selectedTime:styles.unSelectedTime]}>{item.time}</Text>
-                            </TouchableOpacity>
-                        )}
-                    />
-                </View>
-
-                {/* Booking Status */}
-
-                <View>
-                    <Heading text={'Booking Status'} />
-                    <DropDownPicker
-                        open={open}
-                        value={value}
-                        items={items}
-                        setOpen={setOpen}
-                        setValue={setValue}
-                        setItems={setItems}
-                        containerStyle={{
-                            backgroundColor: 'white',
-                            width: 150,
-                            height:200
-                        }}
-                    />
-                </View>
-                
-                {/* Confirmation Button */}
-
-                <View>
-                <TouchableOpacity 
-                        style={{marginTop:15}}
-                        onPress={()=>editBooking()}
-                        >
-                        <Text style={styles.confirmBtn}>Confirm Changes</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </ScrollView>
+                )}
+            />
             
         </View>
     )
@@ -188,7 +187,6 @@ const styles = StyleSheet.create({
         borderRadius:15
     },
     infoContainer: {
-        padding: 20,
         display: 'flex',
         gap: 6
     },

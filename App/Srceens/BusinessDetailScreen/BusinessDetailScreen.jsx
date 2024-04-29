@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, Modal } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList, Modal } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -22,45 +22,53 @@ export default function BusinessDetailScreen() {
                 <BackButton/>
             </View>
 
-            <ScrollView style={{marginTop: 5, height: '95%'}}>
-                <Image 
-                    source={{uri: business?.images[0]?.url}}
-                    style={{width: '100%', height: 260}}
-                />
+            {/* style={{marginTop: 5, height: '95%'}} */}
 
-                <View style={styles.infoContainer}>
-                    <Text style={{fontSize: 20, fontFamily: 'outfit-bold'}}>{business?.name}</Text>
-                    <View style={styles.subContainer}>
-                        <Text style={{fontFamily: 'outfit-medium', color: Colors.PRIMARY, fontSize: 16}}>{business?.contactPerson} 🌟 </Text>
-                        <Text style={{fontFamily: 'outfit', color: Colors.PRIMARY, fontSize: 12, backgroundColor: Colors.PRIMARY_LIGHT, padding: 3, borderRadius: 3}}>{business?.category?.name}</Text>
-                    </View>
-                    <Text style={{fontSize: 15, fontFamily: 'outfit', color: Colors.GREY}}>
-                        <Ionicons name="location-sharp" size={18} color={Colors.PRIMARY} style={{marginRight: 5}} />
-                        {business?.address}
-                    </Text>
-                    
-                    {/* Horizontal Line */}
-                    <View style={{width: '100%', height: 0.5, backgroundColor: Colors.GREY, marginVertical: 10}}/>
-                    
+            <FlatList
+                data={[business]}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
                     <View>
-                        <Heading text={'About Us'}/>
-                        <Text style={{fontSize: 14, fontFamily: 'outfit', color: Colors.GREY, lineHeight: 22, textAlign: 'justify'}} numberOfLines={isReadMore ? 100 : 5}>
-                            {business?.about}
-                        </Text>
-                        <TouchableOpacity onPress={() => setIsReadMore(!isReadMore)}>
-                            <Text style={{fontSize: 14, color: Colors.PRIMARY, fontFamily: 'outfit'}}>
-                                {isReadMore ? 'Read Less' : 'Read More'}
+                        <Image 
+                            source={{uri: item?.images[0]?.url}}
+                            style={{width: '100%', height: 260}}
+                        />
+
+                        <View style={styles.infoContainer}>
+                            <Text style={{fontSize: 20, fontFamily: 'outfit-bold'}}>{item?.name}</Text>
+                            <View style={styles.subContainer}>
+                                <Text style={{fontFamily: 'outfit-medium', color: Colors.PRIMARY, fontSize: 16}}>{item?.contactPerson} 🌟 </Text>
+                                <Text style={{fontFamily: 'outfit', color: Colors.PRIMARY, fontSize: 12, backgroundColor: Colors.PRIMARY_LIGHT, padding: 3, borderRadius: 3}}>{item?.category?.name}</Text>
+                            </View>
+                            <Text style={{fontSize: 15, fontFamily: 'outfit', color: Colors.GREY}}>
+                                <Ionicons name="location-sharp" size={18} color={Colors.PRIMARY} style={{marginRight: 5}} />
+                                {item?.address}
                             </Text>
-                        </TouchableOpacity>
-                        
+                            
+                            {/* Horizontal Line */}
+                            <View style={{width: '100%', height: 0.5, backgroundColor: Colors.GREY, marginVertical: 10}}/>
+                            
+                            <View>
+                                <Heading text={'About Us'}/>
+                                <Text style={{fontSize: 14, fontFamily: 'outfit', color: Colors.GREY, lineHeight: 22, textAlign: 'justify'}} numberOfLines={isReadMore ? 100 : 5}>
+                                    {item?.about}
+                                </Text>
+                                <TouchableOpacity onPress={() => setIsReadMore(!isReadMore)}>
+                                    <Text style={{fontSize: 14, color: Colors.PRIMARY, fontFamily: 'outfit'}}>
+                                        {isReadMore ? 'Read Less' : 'Read More'}
+                                    </Text>
+                                </TouchableOpacity>
+                                
+                            </View>
+
+                            {/* Horizontal Line */}
+                            <View style={{width: '100%', height: 0.5, backgroundColor: Colors.GREY, marginVertical: 10}}/>
+
+                            <BusinessPhotos images={item?.images}/>
+                        </View>
                     </View>
-
-                    {/* Horizontal Line */}
-                    <View style={{width: '100%', height: 0.5, backgroundColor: Colors.GREY, marginVertical: 10}}/>
-
-                    <BusinessPhotos images={business?.images}/>
-                </View>
-            </ScrollView>
+                )}
+            />
 
             <View style={{padding: 10, display: 'flex', flexDirection: 'row', gap: 10, bottom: 0 }}>
                 <TouchableOpacity 

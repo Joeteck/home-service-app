@@ -21,13 +21,20 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.joeteck.homeserviceapp"
     },
+    "scheme": "com.joeteck.homeserviceapp",
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "9e7a18b1-d319-4b5e-9e1f-6724efc36929"
+      }
+    }
   }
 }

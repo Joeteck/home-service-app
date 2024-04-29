@@ -1,5 +1,5 @@
 {
-  "name": "home-service-app",
+  "name": "joeteck-home-service-app",
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {

@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Modal, StyleSheet } from 'react-native';
-import Svg, { Circle } from 'react-native-svg';
+import { View, Modal, StyleSheet, Image } from 'react-native';
 import Colors from '../../Utils/Colors';
 
 export default function SplashScreen({ visible, onClose }) {
@@ -13,23 +12,10 @@ export default function SplashScreen({ visible, onClose }) {
             style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
         >
             <View style={styles.container}>
-                <Svg
-                    style={styles.svg}
-                    width={100}
-                    height={100}
-                >
-                    <Circle
-                        cx={50}
-                        cy={50}
-                        r={40}
-                        fill="none"
-                        strokeWidth={4}
-                        stroke="#fff"
-                        strokeDasharray={200}
-                        strokeDashoffset={100}
-                        strokeLinecap="round"
-                    />
-                </Svg>
+                <Image
+                    style={styles.icon}
+                    source={require('../../../assets/icon.png')}
+                />
             </View>
         </Modal>
     );
@@ -42,7 +28,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: Colors.PRIMARY_LIGHT,
     },
-    svg: {
-        backgroundColor: 'transparent',
+    icon: {
+        width: 100,
+        height: 100,
     },
 });
